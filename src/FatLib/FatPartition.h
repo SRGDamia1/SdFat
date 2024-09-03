@@ -160,6 +160,7 @@ class FatPartition {
   uint8_t m_clusterSectorMask;       // Mask to extract sector of cluster.
   uint8_t m_sectorsPerClusterShift;  // Cluster count to sector count shift.
   uint8_t m_fatType = 0;             // Volume type (12, 16, OR 32).
+  uint8_t  m_fatCount;                // Number of FAT (1 or 2)
   uint16_t m_rootDirEntryCount;      // Number of entries in FAT16 root dir.
   uint32_t m_allocSearchStart;       // Start cluster for alloc search.
   uint32_t m_sectorsPerFat;          // FAT size in sectors
@@ -200,7 +201,9 @@ class FatPartition {
 #if USE_SEPARATE_FAT_CACHE
   FsCache m_fatCache;
   uint8_t* fatCachePrepare(uint32_t sector, uint8_t options) {
-    options |= FsCache::CACHE_STATUS_MIRROR_FAT;
+    if (m_fatCount == 2) {
+      options |= FsCache::CACHE_STATUS_MIRROR_FAT;
+    }
     return m_fatCache.prepare(sector, options);
   }
   bool cacheSync() {
@@ -208,7 +211,9 @@ class FatPartition {
   }
 #else   // USE_SEPARATE_FAT_CACHE
   uint8_t* fatCachePrepare(uint32_t sector, uint8_t options) {
-    options |= FsCache::CACHE_STATUS_MIRROR_FAT;
+    if (m_fatCount == 2) {
+      options |= FsCache::CACHE_STATUS_MIRROR_FAT;
+    }
     return dataCachePrepare(sector, options);
   }
   bool cacheSync() { return m_cache.sync() && syncDevice(); }

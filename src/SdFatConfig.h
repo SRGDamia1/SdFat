@@ -32,6 +32,24 @@
 #ifdef __AVR__
 #include <avr/io.h>
 #endif  // __AVR__
+
+//------------- Adafruit configuration -------------//
+#define USE_BLOCK_DEVICE_INTERFACE 1
+#define FAT12_SUPPORT 1
+#define SDFAT_FILE_TYPE 1
+#define USE_SPI_ARRAY_TRANSFER 1
+
+// This option will take around 2K of flash, skip for AVR
+#ifndef __AVR__
+#define USE_UTF8_LONG_NAMES 1
+#endif
+
+// Backward-compatible define
+#define ENABLE_EXTENDED_TRANSFER_CLASS USE_BLOCK_DEVICE_INTERFACE
+#define BaseBlockDriver FsBlockDeviceInterface
+#define FatFileSystem FatVolume
+#define SdFatEX SdFat
+
 //
 // To try UTF-8 encoded filenames.
 //  #define USE_UTF8_LONG_NAMES 1
@@ -53,7 +71,7 @@
  * private to prevent multiple copies of a instance for a file.
  *
  * File move constructors and move assignment operators are public to permit
- * return of a file instance for compilers that aren't able to use copy elision. 
+ * return of a file instance for compilers that aren't able to use copy elision.
  *
  */
 /** File copy constructors and copy assignment operators are deleted */
