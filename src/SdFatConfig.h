@@ -48,7 +48,7 @@
 #define ENABLE_EXTENDED_TRANSFER_CLASS USE_BLOCK_DEVICE_INTERFACE
 #define BaseBlockDriver FsBlockDeviceInterface
 #define FatFileSystem FatVolume
-#define SdFatEX   SdFat
+#define SdFatEX SdFat
 
 //
 // To try UTF-8 encoded filenames.
@@ -179,19 +179,19 @@
 #ifndef USE_BLOCK_DEVICE_INTERFACE
 #define USE_BLOCK_DEVICE_INTERFACE 0
 #endif  // USE_BLOCK_DEVICE_INTERFACE
- /**
- * SD_CHIP_SELECT_MODE defines how the functions
- * void sdCsInit(SdCsPin_t pin) {pinMode(pin, OUTPUT);}
- * and
- * void sdCsWrite(SdCsPin_t pin, bool level) {digitalWrite(pin, level);}
- * are defined.
- *
- * 0 - Internal definition is a strong symbol and can't be replaced.
- *
- * 1 - Internal definition is a weak symbol and can be replaced.
- *
- * 2 - No internal definition and must be defined in the application.
- */
+        /**
+         * SD_CHIP_SELECT_MODE defines how the functions
+         * void sdCsInit(SdCsPin_t pin) {pinMode(pin, OUTPUT);}
+         * and
+         * void sdCsWrite(SdCsPin_t pin, bool level) {digitalWrite(pin, level);}
+         * are defined.
+         *
+         * 0 - Internal definition is a strong symbol and can't be replaced.
+         *
+         * 1 - Internal definition is a weak symbol and can be replaced.
+         *
+         * 2 - No internal definition and must be defined in the application.
+         */
 #ifndef SD_CHIP_SELECT_MODE
 #define SD_CHIP_SELECT_MODE 0
 #endif  // SD_CHIP_SELECT_MODE
@@ -364,8 +364,8 @@ typedef uint8_t SdCsPin_t;
  * Set USE_SIMPLE_LITTLE_ENDIAN nonzero for little endian processors
  * with no memory alignment restrictions.
  */
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__\
-  && (defined(__AVR__) || defined(__ARM_FEATURE_UNALIGNED))
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ && \
+    (defined(__AVR__) || defined(__ARM_FEATURE_UNALIGNED))
 #define USE_SIMPLE_LITTLE_ENDIAN 1
 #else  // __BYTE_ORDER_
 #define USE_SIMPLE_LITTLE_ENDIAN 0
@@ -412,11 +412,11 @@ typedef uint8_t SdCsPin_t;
 #endif  // BUILTIN_SDCARD
 // SPI for built-in card.
 #ifndef SDCARD_SPI
-#define SDCARD_SPI      SPI1
+#define SDCARD_SPI SPI1
 #define SDCARD_MISO_PIN 59
 #define SDCARD_MOSI_PIN 61
-#define SDCARD_SCK_PIN  60
-#define SDCARD_SS_PIN   62
+#define SDCARD_SCK_PIN 60
+#define SDCARD_SS_PIN 62
 #endif  // SDCARD_SPI
 #define HAS_SDIO_CLASS 1
 #endif  // defined(__MK64FX512__) || defined(__MK66FX1M0__)
@@ -427,15 +427,13 @@ typedef uint8_t SdCsPin_t;
 /**
  * Determine the default SPI configuration.
  */
-#if defined(ARDUINO_ARCH_APOLLO3)\
-  || (defined(__AVR__) && defined(SPDR) && defined(SPSR) && defined(SPIF))\
-  || (defined(__AVR__) && defined(SPI0) && defined(SPI_RXCIF_bm))\
-  || defined(ESP8266) || defined(ESP32)\
-  || defined(PLATFORM_ID)\
-  || defined(ARDUINO_SAM_DUE)\
-  || defined(STM32_CORE_VERSION)\
-  || defined(__STM32F1__) || defined(__STM32F4__)\
-  || (defined(CORE_TEENSY) && defined(__arm__))
+#if defined(ARDUINO_ARCH_APOLLO3) ||                                         \
+    (defined(__AVR__) && defined(SPDR) && defined(SPSR) && defined(SPIF)) || \
+    (defined(__AVR__) && defined(SPI0) && defined(SPI_RXCIF_bm)) ||          \
+    defined(ESP8266) || defined(ESP32) || defined(PLATFORM_ID) ||            \
+    defined(ARDUINO_SAM_DUE) || defined(STM32_CORE_VERSION) ||               \
+    defined(__STM32F1__) || defined(__STM32F4__) ||                          \
+    (defined(CORE_TEENSY) && defined(__arm__))
 #define SD_HAS_CUSTOM_SPI 1
 #else  // SD_HAS_CUSTOM_SPI
 // Use standard SPI library.

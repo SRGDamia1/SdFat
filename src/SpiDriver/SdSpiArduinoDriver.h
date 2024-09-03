@@ -55,12 +55,12 @@ class SdSpiArduinoDriver {
    */
   uint8_t receive();
   /** Receive multiple bytes.
-  *
-  * \param[out] buf Buffer to receive the data.
-  * \param[in] count Number of bytes to receive.
-  *
-  * \return Zero for no error or nonzero error code.
-  */
+   *
+   * \param[out] buf Buffer to receive the data.
+   * \param[in] count Number of bytes to receive.
+   *
+   * \return Zero for no error or nonzero error code.
+   */
   uint8_t receive(uint8_t* buf, size_t count);
   /** Send a byte.
    *
@@ -82,7 +82,7 @@ class SdSpiArduinoDriver {
   }
 
  private:
-  SPIClass *m_spi;
+  SPIClass* m_spi;
   SPISettings m_spiSettings;
 };
 /** Typedef for use of SdSpiArduinoDriver */

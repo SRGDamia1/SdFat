@@ -28,22 +28,22 @@
  * \file
  * \brief Ring buffer for data loggers.
  */
-#include "common/SysCall.h"
 #include "common/FmtNumber.h"
+#include "common/SysCall.h"
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 //  Teensy 3.5/3.6 has hard fault at 0x20000000 for unaligned memcpy.
 #if defined(__MK64FX512__) || defined(__MK66FX1M0__)
 inline bool is_aligned(const void* ptr, uintptr_t alignment) {
-    auto iptr = reinterpret_cast<uintptr_t>(ptr);
-    return !(iptr % alignment);
+  auto iptr = reinterpret_cast<uintptr_t>(ptr);
+  return !(iptr % alignment);
 }
 inline void memcpyBuf(void* dst, const void* src, size_t len) {
   const uint8_t* b = reinterpret_cast<const uint8_t*>(0X20000000UL);
   uint8_t* d = reinterpret_cast<uint8_t*>(dst);
-  const uint8_t *s = reinterpret_cast<const uint8_t*>(src);
+  const uint8_t* s = reinterpret_cast<const uint8_t*>(src);
   if ((is_aligned(d, 4) && is_aligned(s, 4) && (len & 3) == 0) ||
-    !((d < b && b <= (d + len)) || (s < b && b <= (s + len)))) {
+      !((d < b && b <= (d + len)) || (s < b && b <= (s + len)))) {
     memcpy(dst, src, len);
   } else {
     while (len--) {
@@ -51,7 +51,7 @@ inline void memcpyBuf(void* dst, const void* src, size_t len) {
     }
   }
 }
-#else  // defined(__MK64FX512__) || defined(__MK66FX1M0__)
+#else   // defined(__MK64FX512__) || defined(__MK66FX1M0__)
 inline void memcpyBuf(void* dst, const void* src, size_t len) {
   memcpy(dst, src, len);
 }
@@ -69,7 +69,7 @@ inline void memcpyBuf(void* dst, const void* src, size_t len) {
  *
  * Print into a RingBuf in an ISR should also work but has not been verified.
  */
-template<class F, size_t Size>
+template <class F, size_t Size>
 class RingBuf : public Print {
  public:
   /**
@@ -101,9 +101,7 @@ class RingBuf : public Print {
   /**
    * \return the RingBuf free space in bytes. ISR callable.
    */
-  size_t bytesFreeIsr() const {
-    return Size - m_count;
-  }
+  size_t bytesFreeIsr() const { return Size - m_count; }
   /**
    * \return the RingBuf used space in bytes. Not ISR callable.
    */
@@ -117,9 +115,7 @@ class RingBuf : public Print {
   /**
    * \return the RingBuf used space in bytes.  ISR callable.
    */
-  size_t bytesUsedIsr() const {
-    return m_count;
-  }
+  size_t bytesUsedIsr() const { return m_count; }
   /**
    * Copy data to the RingBuf from buf.
    * The number of bytes copied may be less than count if
@@ -140,10 +136,10 @@ class RingBuf : public Print {
     }
     size_t nread = 0;
     while (nread != count) {
-        n = minSize(Size - m_head, count - nread);
-        memcpyBuf(m_buf + m_head, src + nread, n);
-        m_head = advance(m_head, n);
-        nread += n;
+      n = minSize(Size - m_head, count - nread);
+      memcpyBuf(m_buf + m_head, src + nread, n);
+      m_head = advance(m_head, n);
+      nread += n;
     }
     m_count += nread;
     return nread;
@@ -211,7 +207,7 @@ class RingBuf : public Print {
   template <typename Type>
   size_t printField(Type value, char term) {
     char sign = 0;
-    char buf[3*sizeof(Type) + 3];
+    char buf[3 * sizeof(Type) + 3];
     char* str = buf + sizeof(buf);
 
     if (term) {
@@ -252,12 +248,12 @@ class RingBuf : public Print {
       count = n;
     }
     while (nread != count) {
-        n = minSize(Size - m_head, count - nread);
-        if ((size_t)m_file->read(m_buf + m_head, n) != n) {
-          return nread;
-        }
-        m_head = advance(m_head, n);
-        nread += n;
+      n = minSize(Size - m_head, count - nread);
+      if ((size_t)m_file->read(m_buf + m_head, n) != n) {
+        return nread;
+      }
+      m_head = advance(m_head, n);
+      nread += n;
     }
     noInterrupts();
     m_count += nread;
@@ -296,9 +292,7 @@ class RingBuf : public Print {
    * \param[in] str Location of data to be written.
    * \return Number of bytes actually written.
    */
-  size_t write(const char* str) {
-    return Print::write(str);
-  }
+  size_t write(const char* str) { return Print::write(str); }
   /**
    * Override virtual function in Print for efficiency.
    *
@@ -314,9 +308,7 @@ class RingBuf : public Print {
    * \param[in] data Byte to be written.
    * \return Number of bytes actually written.
    */
-  size_t write(uint8_t data) override {
-    return write(&data, 1);
-  }
+  size_t write(uint8_t data) override { return write(&data, 1); }
   /**
    * Write data to file from RingBuf buffer.
    * \param[in] count number of bytes to be written.
@@ -331,7 +323,7 @@ class RingBuf : public Print {
    */
   size_t writeOut(size_t count) {
     size_t n = bytesUsed();  // Protected from interrupts;
-     if (count > n) {
+    if (count > n) {
       count = n;
     }
     size_t nwrite = 0;
@@ -361,6 +353,6 @@ class RingBuf : public Print {
     return index < Size ? index : index - Size;
   }
   // avoid macro MIN
-  size_t minSize(size_t a, size_t b) {return a < b ? a : b;}
+  size_t minSize(size_t a, size_t b) { return a < b ? a : b; }
 };
 #endif  // RingBuf_h

@@ -25,6 +25,7 @@
 #ifndef SdCardInfo_h
 #define SdCardInfo_h
 #include <stdint.h>
+
 #include "../common/SysCall.h"
 // Based on the document:
 //
@@ -43,67 +44,67 @@
 //------------------------------------------------------------------------------
 // SD card errors
 // See the SD Specification for command info.
-#define SD_ERROR_CODE_LIST\
-  SD_CARD_ERROR(NONE, "No error")\
-  SD_CARD_ERROR(CMD0, "Card reset failed")\
-  SD_CARD_ERROR(CMD2, "SDIO read CID")\
-  SD_CARD_ERROR(CMD3, "SDIO publish RCA")\
-  SD_CARD_ERROR(CMD6, "Switch card function")\
-  SD_CARD_ERROR(CMD7, "SDIO card select")\
-  SD_CARD_ERROR(CMD8, "Send and check interface settings")\
-  SD_CARD_ERROR(CMD9, "Read CSD data")\
-  SD_CARD_ERROR(CMD10, "Read CID data")\
-  SD_CARD_ERROR(CMD12, "Stop multiple block read")\
-  SD_CARD_ERROR(CMD13, "Read card status")\
-  SD_CARD_ERROR(CMD17, "Read single block")\
-  SD_CARD_ERROR(CMD18, "Read multiple blocks")\
-  SD_CARD_ERROR(CMD24, "Write single block")\
-  SD_CARD_ERROR(CMD25, "Write multiple blocks")\
-  SD_CARD_ERROR(CMD32, "Set first erase block")\
-  SD_CARD_ERROR(CMD33, "Set last erase block")\
-  SD_CARD_ERROR(CMD38, "Erase selected blocks")\
-  SD_CARD_ERROR(CMD58, "Read OCR register")\
-  SD_CARD_ERROR(CMD59, "Set CRC mode")\
-  SD_CARD_ERROR(ACMD6, "Set SDIO bus width")\
-  SD_CARD_ERROR(ACMD13, "Read extended status")\
-  SD_CARD_ERROR(ACMD23, "Set pre-erased count")\
-  SD_CARD_ERROR(ACMD41, "Activate card initialization")\
-  SD_CARD_ERROR(ACMD51, "Read SCR data")\
-  SD_CARD_ERROR(READ_TOKEN, "Bad read data token")\
-  SD_CARD_ERROR(READ_CRC, "Read CRC error")\
-  SD_CARD_ERROR(READ_FIFO, "SDIO fifo read timeout")\
-  SD_CARD_ERROR(READ_REG, "Read CID or CSD failed.")\
-  SD_CARD_ERROR(READ_START, "Bad readStart argument")\
-  SD_CARD_ERROR(READ_TIMEOUT, "Read data timeout")\
-  SD_CARD_ERROR(STOP_TRAN, "Multiple block stop failed")\
-  SD_CARD_ERROR(TRANSFER_COMPLETE, "SDIO transfer complete")\
-  SD_CARD_ERROR(WRITE_DATA, "Write data not accepted")\
-  SD_CARD_ERROR(WRITE_FIFO, "SDIO fifo write timeout")\
-  SD_CARD_ERROR(WRITE_START, "Bad writeStart argument")\
-  SD_CARD_ERROR(WRITE_PROGRAMMING, "Flash programming")\
-  SD_CARD_ERROR(WRITE_TIMEOUT, "Write timeout")\
-  SD_CARD_ERROR(DMA, "DMA transfer failed")\
-  SD_CARD_ERROR(ERASE, "Card did not accept erase commands")\
-  SD_CARD_ERROR(ERASE_SINGLE_SECTOR, "Card does not support erase")\
-  SD_CARD_ERROR(ERASE_TIMEOUT, "Erase command timeout")\
-  SD_CARD_ERROR(INIT_NOT_CALLED, "Card has not been initialized")\
-  SD_CARD_ERROR(INVALID_CARD_CONFIG, "Invalid card config")\
+#define SD_ERROR_CODE_LIST                                          \
+  SD_CARD_ERROR(NONE, "No error")                                   \
+  SD_CARD_ERROR(CMD0, "Card reset failed")                          \
+  SD_CARD_ERROR(CMD2, "SDIO read CID")                              \
+  SD_CARD_ERROR(CMD3, "SDIO publish RCA")                           \
+  SD_CARD_ERROR(CMD6, "Switch card function")                       \
+  SD_CARD_ERROR(CMD7, "SDIO card select")                           \
+  SD_CARD_ERROR(CMD8, "Send and check interface settings")          \
+  SD_CARD_ERROR(CMD9, "Read CSD data")                              \
+  SD_CARD_ERROR(CMD10, "Read CID data")                             \
+  SD_CARD_ERROR(CMD12, "Stop multiple block read")                  \
+  SD_CARD_ERROR(CMD13, "Read card status")                          \
+  SD_CARD_ERROR(CMD17, "Read single block")                         \
+  SD_CARD_ERROR(CMD18, "Read multiple blocks")                      \
+  SD_CARD_ERROR(CMD24, "Write single block")                        \
+  SD_CARD_ERROR(CMD25, "Write multiple blocks")                     \
+  SD_CARD_ERROR(CMD32, "Set first erase block")                     \
+  SD_CARD_ERROR(CMD33, "Set last erase block")                      \
+  SD_CARD_ERROR(CMD38, "Erase selected blocks")                     \
+  SD_CARD_ERROR(CMD58, "Read OCR register")                         \
+  SD_CARD_ERROR(CMD59, "Set CRC mode")                              \
+  SD_CARD_ERROR(ACMD6, "Set SDIO bus width")                        \
+  SD_CARD_ERROR(ACMD13, "Read extended status")                     \
+  SD_CARD_ERROR(ACMD23, "Set pre-erased count")                     \
+  SD_CARD_ERROR(ACMD41, "Activate card initialization")             \
+  SD_CARD_ERROR(ACMD51, "Read SCR data")                            \
+  SD_CARD_ERROR(READ_TOKEN, "Bad read data token")                  \
+  SD_CARD_ERROR(READ_CRC, "Read CRC error")                         \
+  SD_CARD_ERROR(READ_FIFO, "SDIO fifo read timeout")                \
+  SD_CARD_ERROR(READ_REG, "Read CID or CSD failed.")                \
+  SD_CARD_ERROR(READ_START, "Bad readStart argument")               \
+  SD_CARD_ERROR(READ_TIMEOUT, "Read data timeout")                  \
+  SD_CARD_ERROR(STOP_TRAN, "Multiple block stop failed")            \
+  SD_CARD_ERROR(TRANSFER_COMPLETE, "SDIO transfer complete")        \
+  SD_CARD_ERROR(WRITE_DATA, "Write data not accepted")              \
+  SD_CARD_ERROR(WRITE_FIFO, "SDIO fifo write timeout")              \
+  SD_CARD_ERROR(WRITE_START, "Bad writeStart argument")             \
+  SD_CARD_ERROR(WRITE_PROGRAMMING, "Flash programming")             \
+  SD_CARD_ERROR(WRITE_TIMEOUT, "Write timeout")                     \
+  SD_CARD_ERROR(DMA, "DMA transfer failed")                         \
+  SD_CARD_ERROR(ERASE, "Card did not accept erase commands")        \
+  SD_CARD_ERROR(ERASE_SINGLE_SECTOR, "Card does not support erase") \
+  SD_CARD_ERROR(ERASE_TIMEOUT, "Erase command timeout")             \
+  SD_CARD_ERROR(INIT_NOT_CALLED, "Card has not been initialized")   \
+  SD_CARD_ERROR(INVALID_CARD_CONFIG, "Invalid card config")         \
   SD_CARD_ERROR(FUNCTION_NOT_SUPPORTED, "Unsupported SDIO command")
 
 enum {
 #define SD_CARD_ERROR(e, m) SD_CARD_ERROR_##e,
   SD_ERROR_CODE_LIST
 #undef SD_CARD_ERROR
-  SD_CARD_ERROR_UNKNOWN
+      SD_CARD_ERROR_UNKNOWN
 };
 void printSdErrorSymbol(print_t* pr, uint8_t code);
 void printSdErrorText(print_t* pr, uint8_t code);
 //------------------------------------------------------------------------------
 // card types
 /** Standard capacity V1 SD card */
-const uint8_t SD_CARD_TYPE_SD1  = 1;
+const uint8_t SD_CARD_TYPE_SD1 = 1;
 /** Standard capacity V2 SD card */
-const uint8_t SD_CARD_TYPE_SD2  = 2;
+const uint8_t SD_CARD_TYPE_SD2 = 2;
 /** High Capacity SD card */
 const uint8_t SD_CARD_TYPE_SDHC = 3;
 //------------------------------------------------------------------------------
@@ -186,7 +187,7 @@ const uint32_t CARD_STATUS_ADDRESS_ERROR = 1UL << 30;
 /** The transferred sector length is not allowed for this card. */
 const uint32_t CARD_STATUS_SECTOR_LEN_ERROR = 1UL << 29;
 /** An error in the sequence of erase commands occurred. */
-const uint32_t CARD_STATUS_ERASE_SEQ_ERROR = 1UL <<28;
+const uint32_t CARD_STATUS_ERASE_SEQ_ERROR = 1UL << 28;
 /** An invalid selection of write-sectors for erase occurred. */
 const uint32_t CARD_STATUS_ERASE_PARAM = 1UL << 27;
 /** Set when the host attempts to write to a protected sector. */
@@ -207,7 +208,7 @@ const uint32_t CARD_STATUS_CC_ERROR = 1UL << 20;
 const uint32_t CARD_STATUS_ERROR = 1UL << 19;
 // bits 19, 18, and 17 reserved.
 /** Permanent WP set or attempt to change read only values of  CSD. */
-const uint32_t CARD_STATUS_CSD_OVERWRITE = 1UL <<16;
+const uint32_t CARD_STATUS_CSD_OVERWRITE = 1UL << 16;
 /** partial address space was erased due to write protect. */
 const uint32_t CARD_STATUS_WP_ERASE_SKIP = 1UL << 15;
 /** The command has been executed without using the internal ECC. */
@@ -287,19 +288,17 @@ typedef struct CID {
   uint8_t crc;
   // Extract big endian fields.
   /** \return major revision number. */
-  int prvN() const {return prv >> 4;}
+  int prvN() const { return prv >> 4; }
   /** \return minor revision number. */
-  int prvM() const {return prv & 0XF;}
+  int prvM() const { return prv & 0XF; }
   /** \return Manufacturing Year. */
-  int mdtYear() const {return 2000 + ((mdt[0] & 0XF) << 4) + (mdt[1] >> 4);}
+  int mdtYear() const { return 2000 + ((mdt[0] & 0XF) << 4) + (mdt[1] >> 4); }
   /** \return Manufacturing Month. */
-  int mdtMonth() const {return mdt[1] & 0XF;}
+  int mdtMonth() const { return mdt[1] & 0XF; }
   /** \return Product Serial Number. */
   uint32_t psn() const {
-  return (uint32_t)psn8[0] << 24 |
-         (uint32_t)psn8[1] << 16 |
-         (uint32_t)psn8[2] <<  8 |
-         (uint32_t)psn8[3];
+    return (uint32_t)psn8[0] << 24 | (uint32_t)psn8[1] << 16 |
+           (uint32_t)psn8[2] << 8 | (uint32_t)psn8[3];
   }
 } __attribute__((packed)) cid_t;
 //==============================================================================
@@ -331,15 +330,15 @@ typedef struct CSD {
     }
   }
   /** \return true if erase granularity is single block. */
-  bool eraseSingleBlock() const {return csd[10] & 0X40;}
+  bool eraseSingleBlock() const { return csd[10] & 0X40; }
   /** \return erase size in 512 byte blocks if eraseSingleBlock is false. */
-  int eraseSize() const {return ((csd[10] & 0X3F) << 1 | csd[11] >> 7) + 1;}
+  int eraseSize() const { return ((csd[10] & 0X3F) << 1 | csd[11] >> 7) + 1; }
   /** \return true if the contents is copied or true if original. */
-  bool copy() const {return csd[14] & 0X40;}
+  bool copy() const { return csd[14] & 0X40; }
   /** \return true if the entire card is permanently write protected. */
-  bool permWriteProtect() const {return  csd[14] & 0X20;}
+  bool permWriteProtect() const { return csd[14] & 0X20; }
   /** \return true if the entire card is temporarily write protected. */
-  bool tempWriteProtect() const {return  csd[14] & 0X10;}
+  bool tempWriteProtect() const { return csd[14] & 0X10; }
 } csd_t;
 //==============================================================================
 /**
@@ -350,24 +349,24 @@ typedef struct SCR {
   /** Bytes 0-3 SD Association, bytes 4-7 reserved for manufacturer. */
   uint8_t scr[8];
   /** \return SCR_STRUCTURE field  - must be zero.*/
-  uint8_t srcStructure() {return scr[0] >> 4;}
+  uint8_t srcStructure() { return scr[0] >> 4; }
   /** \return SD_SPEC field 0 - v1.0 or V1.01, 1 - 1.10, 2 - V2.00 or greater */
-  uint8_t sdSpec() {return scr[0] & 0XF;}
+  uint8_t sdSpec() { return scr[0] & 0XF; }
   /** \return false if all zero, true if all one. */
-  bool dataAfterErase() {return 0X80 & scr[1];}
+  bool dataAfterErase() { return 0X80 & scr[1]; }
   /** \return CPRM Security Version. */
-  uint8_t sdSecurity() {return (scr[1] >> 4) & 0X7;}
+  uint8_t sdSecurity() { return (scr[1] >> 4) & 0X7; }
   /** \return 0101b.  */
-  uint8_t sdBusWidths() {return scr[1] & 0XF;}
+  uint8_t sdBusWidths() { return scr[1] & 0XF; }
   /** \return true if V3.0 or greater. */
-  bool sdSpec3() {return scr[2] & 0X80;}
+  bool sdSpec3() { return scr[2] & 0X80; }
   /** \return if true and sdSpecX is zero V4.xx. */
-  bool sdSpec4() {return scr[2] & 0X4;}
+  bool sdSpec4() { return scr[2] & 0X4; }
   /** \return nonzero for version 5 or greater if sdSpec == 2,
               sdSpec3 == true. Version is return plus four.*/
-  uint8_t sdSpecX() {return (scr[2] & 0X3) << 2 | scr[3] >> 6;}
+  uint8_t sdSpecX() { return (scr[2] & 0X3) << 2 | scr[3] >> 6; }
   /** \return bit map for support CMD58/59, CMD48/49, CMD23, and CMD20 */
-  uint8_t cmdSupport() {return scr[3] &0XF;}
+  uint8_t cmdSupport() { return scr[3] & 0XF; }
   /** \return SD spec version */
   int16_t sdSpecVer() {
     if (sdSpec() > 2) {
@@ -379,7 +378,7 @@ typedef struct SCR {
     } else if (!sdSpec4() && !sdSpecX()) {
       return 300;
     }
-    return 400 + 100*sdSpecX();
+    return 400 + 100 * sdSpecX();
   }
 } scr_t;
 //==============================================================================

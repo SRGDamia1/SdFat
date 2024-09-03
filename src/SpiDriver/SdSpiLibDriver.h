@@ -46,23 +46,17 @@ inline void SdSpiArduinoDriver::begin(SdSpiConfig spiConfig) {
   m_spi->begin();
 }
 //------------------------------------------------------------------------------
-inline void SdSpiArduinoDriver::end() {
-  m_spi->end();
-}
+inline void SdSpiArduinoDriver::end() { m_spi->end(); }
 //------------------------------------------------------------------------------
-inline void SdSpiArduinoDriver::deactivate() {
-  m_spi->endTransaction();
-}
+inline void SdSpiArduinoDriver::deactivate() { m_spi->endTransaction(); }
 //------------------------------------------------------------------------------
-inline uint8_t SdSpiArduinoDriver::receive() {
-  return m_spi->transfer( 0XFF);
-}
+inline uint8_t SdSpiArduinoDriver::receive() { return m_spi->transfer(0XFF); }
 //------------------------------------------------------------------------------
 inline uint8_t SdSpiArduinoDriver::receive(uint8_t* buf, size_t count) {
 #if USE_SPI_ARRAY_TRANSFER
   memset(buf, 0XFF, count);
   m_spi->transfer(buf, count);
-#else  // USE_SPI_ARRAY_TRANSFER
+#else   // USE_SPI_ARRAY_TRANSFER
   for (size_t i = 0; i < count; i++) {
     buf[i] = m_spi->transfer(0XFF);
   }
@@ -70,9 +64,7 @@ inline uint8_t SdSpiArduinoDriver::receive(uint8_t* buf, size_t count) {
   return 0;
 }
 //------------------------------------------------------------------------------
-inline void SdSpiArduinoDriver::send(uint8_t data) {
-  m_spi->transfer(data);
-}
+inline void SdSpiArduinoDriver::send(uint8_t data) { m_spi->transfer(data); }
 //------------------------------------------------------------------------------
 inline void SdSpiArduinoDriver::send(const uint8_t* buf, size_t count) {
 #if USE_SPI_ARRAY_TRANSFER
@@ -81,7 +73,7 @@ inline void SdSpiArduinoDriver::send(const uint8_t* buf, size_t count) {
     memcpy(tmp, buf, count);
     m_spi->transfer(tmp, count);
   }
-#else  // USE_SPI_ARRAY_TRANSFER
+#else   // USE_SPI_ARRAY_TRANSFER
   for (size_t i = 0; i < count; i++) {
     m_spi->transfer(buf[i]);
   }

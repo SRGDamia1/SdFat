@@ -30,22 +30,22 @@
 #include "DigitalPin.h"
 //------------------------------------------------------------------------------
 /** Nop for timing. */
-#define nop asm volatile ("nop\n\t")
+#define nop asm volatile("nop\n\t")
 //------------------------------------------------------------------------------
 /** Pin Mode for MISO is input.*/
 #define MISO_MODE INPUT
 /** Pullups disabled for MISO are disabled. */
 #define MISO_LEVEL false
 /** Pin Mode for MOSI is output.*/
-#define MOSI_MODE  OUTPUT
+#define MOSI_MODE OUTPUT
 /** Pin Mode for SCK is output. */
-#define SCK_MODE  OUTPUT
+#define SCK_MODE OUTPUT
 //------------------------------------------------------------------------------
 /**
  * @class SoftSPI
  * @brief Fast software SPI.
  */
-template<uint8_t MisoPin, uint8_t MosiPin, uint8_t SckPin, uint8_t Mode = 0>
+template <uint8_t MisoPin, uint8_t MosiPin, uint8_t SckPin, uint8_t Mode = 0>
 class SoftSPI {
  public:
   //----------------------------------------------------------------------------
@@ -59,8 +59,7 @@ class SoftSPI {
   /** Soft SPI receive byte.
    * @return Data byte received.
    */
-  inline __attribute__((always_inline))
-  uint8_t receive() {
+  inline __attribute__((always_inline)) uint8_t receive() {
     uint8_t data = 0;
     receiveBit(7, &data);
     receiveBit(6, &data);
@@ -76,8 +75,7 @@ class SoftSPI {
   /** Soft SPI send byte.
    * @param[in] data Data byte to send.
    */
-  inline __attribute__((always_inline))
-  void send(uint8_t data) {
+  inline __attribute__((always_inline)) void send(uint8_t data) {
     sendBit(7, data);
     sendBit(6, data);
     sendBit(5, data);
@@ -92,8 +90,7 @@ class SoftSPI {
    * @param[in] txData Data byte to send.
    * @return Data byte received.
    */
-  inline __attribute__((always_inline))
-  uint8_t transfer(uint8_t txData) {
+  inline __attribute__((always_inline)) uint8_t transfer(uint8_t txData) {
     uint8_t rxData = 0;
     transferBit(7, &rxData, txData);
     transferBit(6, &rxData, txData);
@@ -108,33 +105,35 @@ class SoftSPI {
 
  private:
   //----------------------------------------------------------------------------
-  inline __attribute__((always_inline))
-  bool MODE_CPHA(uint8_t mode) {return (mode & 1) != 0;}
-  inline __attribute__((always_inline))
-  bool MODE_CPOL(uint8_t mode) {return (mode & 2) != 0;}
-  inline __attribute__((always_inline))
-  void receiveBit(uint8_t bit, uint8_t* data) {
+  inline __attribute__((always_inline)) bool MODE_CPHA(uint8_t mode) {
+    return (mode & 1) != 0;
+  }
+  inline __attribute__((always_inline)) bool MODE_CPOL(uint8_t mode) {
+    return (mode & 2) != 0;
+  }
+  inline __attribute__((always_inline)) void receiveBit(uint8_t bit,
+                                                        uint8_t* data) {
     if (MODE_CPHA(Mode)) {
       fastDigitalWrite(SckPin, !MODE_CPOL(Mode));
     }
     nop;
     nop;
     fastDigitalWrite(SckPin,
-      MODE_CPHA(Mode) ? MODE_CPOL(Mode) : !MODE_CPOL(Mode));
+                     MODE_CPHA(Mode) ? MODE_CPOL(Mode) : !MODE_CPOL(Mode));
     if (fastDigitalRead(MisoPin)) *data |= 1 << bit;
     if (!MODE_CPHA(Mode)) {
       fastDigitalWrite(SckPin, MODE_CPOL(Mode));
     }
   }
   //----------------------------------------------------------------------------
-  inline __attribute__((always_inline))
-  void sendBit(uint8_t bit, uint8_t data) {
+  inline __attribute__((always_inline)) void sendBit(uint8_t bit,
+                                                     uint8_t data) {
     if (MODE_CPHA(Mode)) {
       fastDigitalWrite(SckPin, !MODE_CPOL(Mode));
     }
     fastDigitalWrite(MosiPin, data & (1 << bit));
     fastDigitalWrite(SckPin,
-      MODE_CPHA(Mode) ? MODE_CPOL(Mode) : !MODE_CPOL(Mode));
+                     MODE_CPHA(Mode) ? MODE_CPOL(Mode) : !MODE_CPOL(Mode));
     nop;
     nop;
     if (!MODE_CPHA(Mode)) {
@@ -142,14 +141,15 @@ class SoftSPI {
     }
   }
   //----------------------------------------------------------------------------
-  inline __attribute__((always_inline))
-  void transferBit(uint8_t bit, uint8_t* rxData, uint8_t txData) {
+  inline __attribute__((always_inline)) void transferBit(uint8_t bit,
+                                                         uint8_t* rxData,
+                                                         uint8_t txData) {
     if (MODE_CPHA(Mode)) {
       fastDigitalWrite(SckPin, !MODE_CPOL(Mode));
     }
     fastDigitalWrite(MosiPin, txData & (1 << bit));
     fastDigitalWrite(SckPin,
-      MODE_CPHA(Mode) ? MODE_CPOL(Mode) : !MODE_CPOL(Mode));
+                     MODE_CPHA(Mode) ? MODE_CPOL(Mode) : !MODE_CPOL(Mode));
     if (fastDigitalRead(MisoPin)) *rxData |= 1 << bit;
     if (!MODE_CPHA(Mode)) {
       fastDigitalWrite(SckPin, MODE_CPOL(Mode));

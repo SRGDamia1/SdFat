@@ -24,23 +24,17 @@
  */
 #define DBG_FILE "FatFileLFN.cpp"
 #include "../common/DebugMacros.h"
-#include "../common/upcase.h"
 #include "../common/FsUtf.h"
+#include "../common/upcase.h"
 #include "FatLib.h"
 #if USE_LONG_FILE_NAMES
 //------------------------------------------------------------------------------
-static bool isLower(char c) {
-  return 'a' <= c && c <= 'z';
-}
+static bool isLower(char c) { return 'a' <= c && c <= 'z'; }
 //------------------------------------------------------------------------------
-static bool isUpper(char c) {
-  return 'A' <= c && c <= 'Z';
-}
+static bool isUpper(char c) { return 'A' <= c && c <= 'Z'; }
 //------------------------------------------------------------------------------
 // A bit smaller than toupper in AVR 328.
-inline char toUpper(char c) {
-  return isLower(c) ? c - 'a' + 'A' : c;
-}
+inline char toUpper(char c) { return isLower(c) ? c - 'a' + 'A' : c; }
 //------------------------------------------------------------------------------
 /**
  * Store a 16-bit long file name character.
@@ -51,18 +45,19 @@ inline char toUpper(char c) {
  */
 static void putLfnChar(DirLfn_t* ldir, uint8_t i, uint16_t c) {
   if (i < 5) {
-    setLe16(ldir->unicode1 + 2*i, c);
+    setLe16(ldir->unicode1 + 2 * i, c);
   } else if (i < 11) {
-    setLe16(ldir->unicode2 + 2*i -10, c);
+    setLe16(ldir->unicode2 + 2 * i - 10, c);
   } else if (i < 13) {
-    setLe16(ldir->unicode3 + 2*i - 22, c);
+    setLe16(ldir->unicode3 + 2 * i - 22, c);
   }
 }
 //------------------------------------------------------------------------------
 // Daniel Bernstein University of Illinois at Chicago.
 // Original had + instead of ^
-__attribute__((unused))
-static uint16_t Bernstein(const char* bgn, const char* end, uint16_t hash) {
+__attribute__((unused)) static uint16_t Bernstein(const char* bgn,
+                                                  const char* end,
+                                                  uint16_t hash) {
   while (bgn < end) {
     // hash = hash * 33 ^ str[i];
     hash = ((hash << 5) + hash) ^ (*bgn++);
@@ -95,7 +90,7 @@ bool FatFile::cmpName(uint16_t index, FatLfn_t* fname, uint8_t lfnOrd) {
       if (toUpcase(u) != toUpcase(cp)) {
         return false;
       }
-#else  // USE_UTF8_LONG_NAMES
+#else   // USE_UTF8_LONG_NAMES
       if (u > 0X7F || toUpper(u) != toUpper(fname->getch())) {
         return false;
       }
@@ -104,7 +99,7 @@ bool FatFile::cmpName(uint16_t index, FatLfn_t* fname, uint8_t lfnOrd) {
   }
   return true;
 
- fail:
+fail:
   return false;
 }
 //------------------------------------------------------------------------------
@@ -141,13 +136,13 @@ bool FatFile::createLFN(uint16_t index, FatLfn_t* fname, uint8_t lfnOrd) {
   }
   return true;
 
- fail:
+fail:
   return false;
 }
 //------------------------------------------------------------------------------
 bool FatFile::makeSFN(FatLfn_t* fname) {
   bool is83;
-//  char c;
+  //  char c;
   uint8_t c;
   uint8_t bit = FAT_CASE_LC_BASE;
   uint8_t lc = 0;
@@ -170,15 +165,17 @@ bool FatFile::makeSFN(FatLfn_t* fname) {
   // Not 8.3 if starts with dot.
   is83 = *ptr == '.' ? false : true;
   // Skip leading dots.
-  for (; *ptr == '.'; ptr++) {}
+  for (; *ptr == '.'; ptr++) {
+  }
   // Find last dot.
-  for (dot = end - 1; dot > ptr && *dot != '.'; dot--) {}
+  for (dot = end - 1; dot > ptr && *dot != '.'; dot--) {
+  }
 
   for (; ptr < end; ptr++) {
     c = *ptr;
     if (c == '.' && ptr == dot) {
-      in = 10;  // Max index for full 8.3 name.
-      i = 8;    // Place for extension.
+      in = 10;                // Max index for full 8.3 name.
+      i = 8;                  // Place for extension.
       bit = FAT_CASE_LC_EXT;  // bit for extension.
     } else {
       if (sfnReservedChar(c)) {
@@ -192,7 +189,7 @@ bool FatFile::makeSFN(FatLfn_t* fname) {
       if (i > in) {
         is83 = false;
         if (in == 10 || ptr > dot) {
-         // Done - extension longer than three characters or no extension.
+          // Done - extension longer than three characters or no extension.
           break;
         }
         // Skip to dot.
@@ -224,7 +221,7 @@ bool FatFile::makeSFN(FatLfn_t* fname) {
   }
   return true;
 
- fail:
+fail:
   return false;
 }
 //------------------------------------------------------------------------------
@@ -238,7 +235,7 @@ bool FatFile::makeUniqueSfn(FatLfn_t* fname) {
   DBG_HALT_IF(fname->sfn[pos] != '~' && fname->sfn[pos + 1] != '1');
 
   for (uint8_t seq = FIRST_HASH_SEQ; seq < 100; seq++) {
-     DBG_WARN_IF(seq > FIRST_HASH_SEQ);
+    DBG_WARN_IF(seq > FIRST_HASH_SEQ);
 #ifdef USE_LFN_HASH
     hex = Bernstein(fname->begin, fname->end, seq);
 #else
@@ -248,7 +245,7 @@ bool FatFile::makeUniqueSfn(FatLfn_t* fname) {
       // Make space in name for ~HHHH.
       pos = 3;
     }
-    for (uint8_t i = pos + 4 ; i > pos; i--) {
+    for (uint8_t i = pos + 4; i > pos; i--) {
       uint8_t h = hex & 0XF;
       fname->sfn[i] = h < 10 ? h + '0' : h + 'A' - 10;
       hex >>= 4;
@@ -277,10 +274,10 @@ bool FatFile::makeUniqueSfn(FatLfn_t* fname) {
   // fall inti fail - too many tries.
   DBG_FAIL_MACRO;
 
- fail:
+fail:
   return false;
 
- done:
+done:
   return true;
 }
 //------------------------------------------------------------------------------
@@ -306,11 +303,11 @@ bool FatFile::open(FatFile* dirFile, FatLfn_t* fname, oflag_t oflag) {
     goto fail;
   }
   // Number of directory entries needed.
-  nameOrd = (fname->len + 12)/13;
+  nameOrd = (fname->len + 12) / 13;
   freeNeed = fname->flags & FNAME_FLAG_NEED_LFN ? 1 + nameOrd : 1;
   dirFile->rewind();
   while (1) {
-    curIndex = dirFile->m_curPosition/FS_DIR_SIZE;
+    curIndex = dirFile->m_curPosition / FS_DIR_SIZE;
     dir = dirFile->readDirCache();
     if (!dir) {
       if (dirFile->getError()) {
@@ -343,7 +340,7 @@ bool FatFile::open(FatFile* dirFile, FatLfn_t* fname, oflag_t oflag) {
       if (!lfnOrd) {
         order = ldir->order & 0X1F;
         if (order != nameOrd ||
-          (ldir->order & FAT_ORDER_LAST_LONG_ENTRY) == 0) {
+            (ldir->order & FAT_ORDER_LAST_LONG_ENTRY) == 0) {
           continue;
         }
         lfnOrd = nameOrd;
@@ -376,7 +373,7 @@ bool FatFile::open(FatFile* dirFile, FatLfn_t* fname, oflag_t oflag) {
     }
   }
 
- found:
+found:
   // Don't open if create only.
   if (oflag & O_EXCL) {
     DBG_FAIL_MACRO;
@@ -384,7 +381,7 @@ bool FatFile::open(FatFile* dirFile, FatLfn_t* fname, oflag_t oflag) {
   }
   goto open;
 
- create:
+create:
   // don't create unless O_CREAT and write mode
   if (!(oflag & O_CREAT) || !isWriteMode(oflag)) {
     DBG_WARN_MACRO;
@@ -456,7 +453,7 @@ bool FatFile::open(FatFile* dirFile, FatLfn_t* fname, oflag_t oflag) {
   // Force write of entry to device.
   vol->cacheDirty();
 
- open:
+open:
   // open entry in cache.
   if (!openCachedEntry(dirFile, curIndex, oflag, lfnOrd)) {
     DBG_FAIL_MACRO;
@@ -464,12 +461,12 @@ bool FatFile::open(FatFile* dirFile, FatLfn_t* fname, oflag_t oflag) {
   }
   return true;
 
- fail:
+fail:
   return false;
 }
 //------------------------------------------------------------------------------
-bool FatFile::parsePathName(const char* path,
-                            FatLfn_t* fname, const char** ptr) {
+bool FatFile::parsePathName(const char* path, FatLfn_t* fname,
+                            const char** ptr) {
   size_t len = 0;
   // Skip leading spaces.
   while (*path == ' ') {
@@ -491,7 +488,7 @@ bool FatFile::parsePathName(const char* path,
       DBG_FAIL_MACRO;
       goto fail;
     }
-#else  // USE_UTF8_LONG_NAMES
+#else   // USE_UTF8_LONG_NAMES
     uint8_t cp = *path++;
     if (cp >= 0X80 || lfnReservedChar(cp)) {
       DBG_FAIL_MACRO;
@@ -510,11 +507,12 @@ bool FatFile::parsePathName(const char* path,
     goto fail;
   }
   // Advance to next path component.
-  for (; *path == ' ' || isDirSeparator(*path); path++) {}
+  for (; *path == ' ' || isDirSeparator(*path); path++) {
+  }
   *ptr = path;
   return makeSFN(fname);
 
- fail:
+fail:
   return false;
 }
 //------------------------------------------------------------------------------
@@ -570,8 +568,7 @@ bool FatFile::remove() {
       goto fail;
     }
     if (ldir->attributes != FAT_ATTRIB_LONG_NAME ||
-        order != (ldir->order & 0X1F) ||
-        checksum != ldir->checksum) {
+        order != (ldir->order & 0X1F) || checksum != ldir->checksum) {
       DBG_FAIL_MACRO;
       goto fail;
     }
@@ -589,7 +586,7 @@ bool FatFile::remove() {
   // Fall into fail.
   DBG_FAIL_MACRO;
 
- fail:
+fail:
   return false;
 }
 #endif  // #if USE_LONG_FILE_NAMES

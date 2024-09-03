@@ -41,7 +41,7 @@ class SdCardInterface : public FsBlockDeviceInterface {
   virtual bool cardCMD6(uint32_t arg, uint8_t* status) = 0;
   /** end use of card */
   virtual void end() = 0;
-   /** Erase a range of sectors.
+  /** Erase a range of sectors.
    *
    * \param[in] firstSector The address of the first sector in the range.
    * \param[in] lastSector The address of the last sector in the range.
@@ -56,9 +56,9 @@ class SdCardInterface : public FsBlockDeviceInterface {
   /** \return true if card is busy. */
   virtual bool isBusy() = 0;
   /** \return false by default */
-  virtual bool hasDedicatedSpi() {return false;}
+  virtual bool hasDedicatedSpi() { return false; }
   /** \return false by default */
-  bool virtual isDedicatedSpi() {return false;}
+  bool virtual isDedicatedSpi() { return false; }
   /** Set SPI sharing state
    * \param[in] value desired state.
    * \return false by default.
@@ -75,7 +75,7 @@ class SdCardInterface : public FsBlockDeviceInterface {
    * \return true for success or false for failure.
    */
   virtual bool readCID(cid_t* cid) = 0;
-   /**
+  /**
    * Read a card's CSD register.
    *
    * \param[out] csd pointer to area for returned data.
@@ -94,7 +94,7 @@ class SdCardInterface : public FsBlockDeviceInterface {
    * \param[out] scr Value of SCR register.
    * \return true for success or false for failure.
    */
-  virtual bool readSCR(scr_t *scr) = 0;
+  virtual bool readSCR(scr_t* scr) = 0;
   /**
    * Determine the size of an SD flash memory card.
    *
@@ -103,7 +103,7 @@ class SdCardInterface : public FsBlockDeviceInterface {
    */
   virtual uint32_t sectorCount() = 0;
   /** \return card status. */
-  virtual uint32_t status() {return 0XFFFFFFFF;}
+  virtual uint32_t status() { return 0XFFFFFFFF; }
   /** Return the card type: SD V1, SD V2 or SDHC/SDXC
    * \return 0 - SD V1, 1 - SD V2, or 3 - SDHC/SDXC.
    */
