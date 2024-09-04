@@ -155,6 +155,7 @@ void dmpVol() {
   } else {
     cout << F("\nVolume is exFAT\n");
   }
+  cout << F("bytesPerCluster: ") << sd.vol()->bytesPerCluster() << endl;
   cout << F("sectorsPerCluster: ") << sd.sectorsPerCluster() << endl;
   cout << F("fatStartSector:    ") << sd.fatStartSector() << endl;
   cout << F("dataStartSector:   ") << sd.dataStartSector() << endl;
