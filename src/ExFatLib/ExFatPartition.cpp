@@ -299,7 +299,7 @@ bool ExFatPartition::init(FsBlockDevice* dev, uint8_t part, uint32_t volStart) {
     goto fail;
   }
   if (strncmp(pbs->oemName, "EXFAT", 5)) {
-    DBG_FAIL_MACRO;
+    DBG_WARN_MACRO;
     goto fail;
   }
   bpb = reinterpret_cast<BpbExFat_t*>(pbs->bpb);
